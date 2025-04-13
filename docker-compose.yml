@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  bet_maker:
+    build:
+      context: .
+      dockerfile: bet_maker.Dockerfile
+    container_name: bet_maker
+    hostname: bet_maker
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./bet_maker:/bet_maker
+    networks:
+      - app_network
+    restart: on-failure
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    hostname: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    hostname: database
+    environment:
+      POSTGRES_USER: betting_app_user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: betting_app
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U betting_app_user -d betting_app"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  redis_data:
+  postgres_data:
+
+networks:
+  app_network:
+    driver: bridge
