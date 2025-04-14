@@ -1,3 +1,5 @@
+import logging
+
 from typing import Annotated
 
 import uvicorn
@@ -12,6 +14,12 @@ from line_provider.schemas import (
 )
 from line_provider.services import (
     EventService,
+)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler()]
 )
 
 

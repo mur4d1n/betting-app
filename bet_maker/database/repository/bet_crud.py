@@ -28,7 +28,6 @@ async def get_bets(session: AsyncSession) -> list[dict]:
 
 
 async def update_bet_status(session: AsyncSession, event_id: int, status: int):
-    logging.warning(f"event_id: {event_id}\nstatus: {status}")
     if status == 1:
         stmt = update(Bet).where(Bet.event_id == event_id).values(status=BetStatus.WIN)
     else:

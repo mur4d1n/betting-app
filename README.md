@@ -183,7 +183,6 @@ docker-compose up -d
 ```
 id: str
 data: dict
-timestamp: str (не используется, но может пригодиться в будущем)
 ```
 
 Словарь `data` имеет следующий формат:

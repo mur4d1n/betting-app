@@ -1,4 +1,5 @@
 import asyncio
+import logging
 
 from contextlib import asynccontextmanager
 from typing import Annotated
@@ -20,6 +21,12 @@ from bet_maker.services import (
 
 from bet_maker.redis_consumer import EventConsumer
 
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler()]
+)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
