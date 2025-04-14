@@ -3,7 +3,7 @@ from decimal import Decimal
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, field_validator, model_validator, ValidationInfo
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 class EventState(Enum):
@@ -14,8 +14,8 @@ class EventState(Enum):
 
 class PostEventSchema(BaseModel):
     event_id: int
-    coefficient: Decimal
-    deadline: datetime
+    coefficient: Decimal = Field(example=1.11)
+    deadline: datetime = Field(example=datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S"))
 
     @field_validator("coefficient")
     @classmethod
@@ -28,8 +28,8 @@ class PostEventSchema(BaseModel):
 
 class PatchEventSchema(BaseModel):
     state: Optional[EventState] = None
-    coefficient: Optional[Decimal] = None
-    deadline: Optional[datetime] = None
+    coefficient: Optional[Decimal] = Field(default=None, example=1.11)
+    deadline: Optional[datetime] = Field(default=None, example=datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S"))
 
     @field_validator("coefficient")
     @classmethod

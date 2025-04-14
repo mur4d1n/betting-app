@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field, field_validator
 
 class PostBetSchema(BaseModel):
     event_id: int | str
-    bet_sum: Annotated[Decimal, Field(gt=0, decimal_places=2)]
+    bet_sum: Annotated[Decimal, Field(gt=0, decimal_places=2, example=1.11)]
 
     @field_validator("bet_sum")
     @classmethod
