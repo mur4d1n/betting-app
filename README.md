@@ -26,7 +26,7 @@ docker-compose up -d
 
 Совершает ставку. Тело запроса должно иметь следующий вид:
 
-```json
+```js
 {
   "event_id": int,
   "bet_sum": Decimal
@@ -45,7 +45,7 @@ docker-compose up -d
 
 Возвращает список ставок в следующем формате:
 
-```json
+```js
 [
   {
     "id": int,
@@ -64,7 +64,7 @@ docker-compose up -d
 
 Возвращает список событий, на которые можно сделать ставку. Формат следующий:
 
-```json
+```js
 [
   {
     "id": int,
@@ -91,7 +91,7 @@ docker-compose up -d
 
 Возвращает список событий, на которые можно сделать ставку. Формат следующий:
 
-```json
+```js
 [
   {
     "id": int,
@@ -114,7 +114,7 @@ docker-compose up -d
 
 Возвращает событие с указанным event_id (при наличии). Формат ответа:
 
-```json
+```js
 {
     "id": int,
     "state": int,
@@ -138,7 +138,7 @@ docker-compose up -d
 
 Тело запроса должно иметь следующий вид:
 
-```json
+```js
 {
   "event_id": int,
   "coefficient": Decimal,
@@ -158,7 +158,7 @@ docker-compose up -d
 
 Тело запроса должно иметь следующий вид:
 
-```json
+```js
 {
   "state": Optional[int],
   "coefficient": Optional[Decimal],
@@ -188,7 +188,7 @@ timestamp: str (не используется, но может пригодит�
 
 Словарь `data` имеет следующий формат:
 
-```json
+```js
 {
   "event_id": int,
   "state": int
