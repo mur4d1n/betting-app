@@ -18,5 +18,3 @@ class Bet(Base):
     event_id: Mapped[int]
     sum: Mapped[numeric]
     status: Mapped[BetStatus]
-
-    # TODO: индекс для event_id, парный индекс для id и статуса (под вопросом)

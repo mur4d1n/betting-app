@@ -5,9 +5,7 @@ from sqlalchemy.pool import NullPool
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 
-DB_URL = (
-    "postgresql+asyncpg://betting_app_user:password@database_bet_maker:5432/betting_app"
-)
+DB_URL = "postgresql+asyncpg://line_provider_user:password@database_line_provider:5432/line_provider"
 
 # Создаём движок и фабрику сессий.
 engine = create_async_engine(url=DB_URL, poolclass=NullPool)

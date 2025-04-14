@@ -10,15 +10,42 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./bet_maker:/bet_maker
+      - ./bet_maker:/app/bet_maker
     networks:
       - app_network
     restart: on-failure
     depends_on:
       redis:
         condition: service_healthy
-      postgres:
+      postgres_bet_maker:
         condition: service_healthy
+      line_provider:
+        condition: service_healthy
+
+  line_provider:
+    build:
+      context: .
+      dockerfile: line_provider.Dockerfile
+    container_name: line_provider
+    hostname: line_provider
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./line_provider:/app/line_provider
+    networks:
+      - app_network
+    restart: on-failure
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres_line_provider:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   redis:
     image: redis:alpine
@@ -37,10 +64,10 @@ services:
       timeout: 3s
       retries: 3
 
-  postgres:
+  postgres_bet_maker:
     image: postgres:15-alpine
-    container_name: postgres
-    hostname: database
+    container_name: postgres_bet_maker
+    hostname: database_bet_maker
     environment:
       POSTGRES_USER: betting_app_user
       POSTGRES_PASSWORD: password
@@ -48,7 +75,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_bet_maker_data:/var/lib/postgresql/data
     networks:
       - app_network
     restart: unless-stopped
@@ -58,9 +85,31 @@ services:
       timeout: 3s
       retries: 3
 
+  postgres_line_provider:
+    image: postgres:15-alpine
+    container_name: postgres_line_provider
+    hostname: database_line_provider
+    environment:
+      POSTGRES_USER: line_provider_user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: line_provider
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_line_provider_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U line_provider_user -d line_provider" ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
 volumes:
   redis_data:
-  postgres_data:
+  postgres_bet_maker_data:
+  postgres_line_provider_data:
 
 networks:
   app_network:

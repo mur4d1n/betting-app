@@ -1,6 +1,5 @@
 __all__ = [
     "Bet",
-
     "BetStatus",
 ]
 

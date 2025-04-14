@@ -1,12 +1,13 @@
 from typing import Type, TypeVar
 
 from fastapi import Depends
+from redis import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bet_maker.database import get_session
-from bet_maker.services import (
-    BetService,
-    GetEventsService,
+from line_provider.database.db_manager import get_session
+from line_provider.redis.redis_manager import get_redis_session
+from line_provider.services import (
+    EventService,
 )
 
 # Для определения типа по мере выполнения.
@@ -25,8 +26,8 @@ class ServiceFactory:
         return self.service_class()
 
 
-class ServiceDBFactory:
-    """Сервис-фабрика с прокидыванием сессии БД."""
+class ServiceDBRedisFactory:
+    """Сервис-фабрика с прокидыванием сессий БД и Redis."""
 
     def __init__(self, service_class: Type[T]):
         """Инициируем фабрику с сервисом на вход."""
@@ -35,11 +36,10 @@ class ServiceDBFactory:
     async def __call__(
         self,
         session: AsyncSession = Depends(get_session),
+        redis: Redis = Depends(get_redis_session),
     ) -> T:
-        """Объявление зависимостей - БД."""
-        return self.service_class(session)
+        """Объявление зависимостей - БД и Redis."""
+        return self.service_class(session, redis)
 
 
-bet_service = ServiceDBFactory(BetService)
-
-get_events_service = ServiceFactory(GetEventsService)
+event_service = ServiceDBRedisFactory(EventService)

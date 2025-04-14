@@ -1,7 +1,7 @@
 __all__ = [
-    "GetBetsService",
-    "PostBetService",
+    "BetService",
+    "GetEventsService",
 ]
 
-from .get_bets_service import GetBetsService
-from .post_bet_service import PostBetService
+from .bet_service import BetService
+from .get_events_service import GetEventsService
