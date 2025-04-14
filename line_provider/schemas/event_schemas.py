@@ -3,7 +3,7 @@ from decimal import Decimal
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, model_validator, ValidationInfo
 
 
 class EventState(Enum):
@@ -27,7 +27,7 @@ class PostEventSchema(BaseModel):
 
 
 class PatchEventSchema(BaseModel):
-    state: Optional[EventState] = EventState.IN_PROGRESS
+    state: Optional[EventState] = None
     coefficient: Optional[Decimal] = None
     deadline: Optional[datetime] = None
 
@@ -38,3 +38,11 @@ class PatchEventSchema(BaseModel):
             raise ValueError("Coefficient must be greater than 1.00")
 
         return v
+
+
+    @model_validator(mode="before")
+    def check_at_least_one(cls, data: dict):
+        if all(data.get(value) is None for value in data.keys()):
+            raise ValueError("At least one field must be provided")
+
+        return data
